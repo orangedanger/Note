@@ -577,8 +577,22 @@ public:
 - 我会用组件拆分可复用 Gameplay 能力，比如生命、战斗、技能、交互。Actor 负责组合组件，组件负责单一职责。这样系统边界更清楚，也便于复用、测试和面试讲解。
 
 ### 练习题
-- HealthComponent 应该知道 UI Widget 吗？为什么？
-- SkillComponent 和 CombatComponent 应该如何通信？
+- HealthComponent 应该知道 UI Widget 吗？为什么？不应该，避免组件之间的强耦合，或者说HealthComponent就应该只管理Health相关的，而不是UI，如果UI需要血量，只需要血量提供一个接口
+- SkillComponent 和 CombatComponent 应该如何通信？我说2种做法，一种他们深度耦合，Skill一定从Combat出发，那么可以在Combat里面加一个TweakObjectPtr保存Skill组件，在他们的Owner初始化之后让Owner调用Combat的初始化就好了，然后Skill怎么传递消息给Combat呢，Skill不应该传递消息给Combat，Combat算一个上级管所有战斗相关的Component，Skill通过一些委托告诉Combat需要其他Component进行配合,第二种，他们属于有很独立的功能，只是其中某一个功能需要相互通信按照ECS的方法我需要一个单例我可能会在他们的上层中加一个东西，比如我想先Combat什么功能再调用Skill我会通过这个上层一点的粘合剂或者Manager完成这个功能，你最好能给我一个他们需要相互通信的例子我来试着能不能用这个方式解决，反正有第一种作为保底
+
+### 练习评价与详解
+- 总体评价：这两题方向不错。你已经抓住组件化最重要的两个原则：单一职责和降低耦合。`HealthComponent` 不应该知道具体 UI；`SkillComponent` 和 `CombatComponent` 通信前要先判断职责关系，而不是默认互相硬调。
+- `HealthComponent` 这题基本正确。更稳的说法是：HealthComponent 负责维护血量、处理伤害/治疗、暴露查询接口，并在血量变化时广播事件，例如 `OnHealthChanged`。UI Widget 订阅这个事件并更新显示。这样换 UI、敌人血条、Boss 血条或网络同步显示时，HealthComponent 都不用改。
+- “如果 UI 需要血量，只需要血量提供一个接口”这句话还可以再补一层：只提供 Getter 会让 UI 主动轮询；更 UE 的方式是 Getter + 委托事件。Getter 适合初始化显示，委托适合变化时更新。
+- `SkillComponent` 和 `CombatComponent` 这题的好点是：你没有直接说“互相拿指针调用”，而是在想主从关系和上层协调者。这个方向是对的。
+- 需要修正的是：不要太快引入“单例”。同一个 Actor 上的组件通信，优先考虑 Owner/Character 作为组合根，或者用接口、委托、明确的初始化函数。全局单例会扩大依赖范围，后期更难测试和替换。
+- 拼写注意：是 `TWeakObjectPtr`，不是 `TweakObjectPtr`。如果只是缓存同 Owner 上另一个组件，并且不表达所有权，用 `TWeakObjectPtr` 可以；如果组件由同一个 Actor 稳定拥有，也可以通过初始化时传入普通指针/`TObjectPtr`，关键是依赖方向要清楚。
+- 一个具体例子：玩家按技能键时，输入层或 Character 调 `SkillComponent->TryActivateSkill(SkillId)`；SkillComponent 检查冷却和消耗后广播 `OnSkillCommit` 或生成 `FSkillRequest`；CombatComponent 负责命中检测、攻击窗口和伤害结算；HealthComponent 接收最终伤害并广播 `OnHealthChanged`；UI 只监听血量或冷却变化事件。
+- 这个例子里的职责边界是：Skill 管技能规则，Combat 管战斗结算，Health 管生命值，UI 管显示，Character/Owner 负责装配组件。这样每个组件都能讲清楚为什么存在。
+
+更稳的面试表达：
+- 我不会让 HealthComponent 直接依赖 Widget。HealthComponent 只维护生命值并广播血量变化事件，UI 通过绑定事件或查询接口更新显示。
+- SkillComponent 和 CombatComponent 的通信要看职责边界。如果技能释放属于战斗流程，可以让 Character 或 CombatComponent 作为协调者，SkillComponent 只负责技能条件和释放请求，CombatComponent 负责命中和伤害结算。组件之间优先用接口、委托或 Owner 装配，避免互相硬引用和全局单例。
 
 ## 机制 08：委托和事件通信
 
