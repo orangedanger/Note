@@ -58,8 +58,8 @@ private:
 - RAII 是把资源生命周期绑定到对象生命周期的 C++ 习惯用法。对象构造时获取资源，析构时释放资源，这样即使函数提前返回或出现异常，也能自动清理资源。智能指针、`std::lock_guard` 都是 RAII 的例子。在 UE 中，`UObject` 的生命周期由 GC 管，但普通 C++ 资源、锁和非 UObject 数据结构仍然需要 RAII 思维。
 
 ### 练习题
-- 用自己的话解释：为什么 `std::lock_guard` 是 RAII？
-- 写一个小类，在构造时打印 `Enter`，析构时打印 `Exit`，然后观察不同 `return` 分支是否都会调用析构。
+- 用自己的话解释：为什么 `std::lock_guard` 是 RAII？因为lock_guard会在作用域结束时释放空间，而不会跳过解锁
+- 写一个小类，在构造时打印 `Enter`，析构时打印 `Exit`，然后观察不同 `return` 分支是否都会调用析构。都会
 
 ## P0-02 智能指针：`unique_ptr`、`shared_ptr`、`weak_ptr`
 
@@ -100,8 +100,8 @@ TUniquePtr<FWeaponRuntimeData> Data = MakeUnique<FWeaponRuntimeData>();
 - 我会先判断对象所有权。如果只有一个所有者，用 `unique_ptr`；如果普通 C++ 对象确实需要共享所有权，用 `shared_ptr`；如果只是观察共享对象，或者要打破循环引用，用 `weak_ptr`。在 UE 中，`UObject` 不走 `shared_ptr` 生命周期，成员引用通常用 `UPROPERTY` 和 `TObjectPtr` 让 GC 识别。
 
 ### 练习题
-- 为什么双向链表节点如果都用 `shared_ptr` 指向彼此，可能泄漏？
-- UE 中一个 `UActorComponent` 成员引用另一个 `UObject`，你会用 `TSharedPtr` 还是 `UPROPERTY() TObjectPtr`？为什么？
+- 为什么双向链表节点如果都用 `shared_ptr` 指向彼此，可能泄漏？因为shared_ptr会互相引用导致双方计数永远有1 无法自动释放内存，正确应该其中一方变成Weak_ptr这样就可以避免相互引用
+- UE 中一个 `UActorComponent` 成员引用另一个 `UObject`，你会用 `TSharedPtr` 还是 `UPROPERTY() TObjectPtr`？为什么？`UPROPERTY() TObjectPtr`，TSharedPtr是对普通C++对象使用的
 
 ## P0-03 拷贝构造、移动构造、赋值运算符
 
