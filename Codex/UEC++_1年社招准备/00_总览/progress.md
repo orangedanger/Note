@@ -42,6 +42,11 @@
 - 2026-06-28：Review `Demo_设计草案_输入.md`，生成 `Demo_设计草案_输入评价_2026-06-28.md`；结论是第 3 周建议做“最小战斗闭环 + 极简 DataTable 技能行”，暂不做 AI 行为树、正式 UI 和联机。
 - 2026-06-28：根据用户确认，正式生成 `02_周计划与复盘\第03周_2026-06-29_2026-07-05\Demo_设计草案.md` 和 `周计划.md`；第 3 周进入小型 ARPG 战斗训练房最小闭环实现准备。
 - 2026-06-29：用户创建 UE 项目 `TPRPG`，路径 `D:\Project\UE_Project\TPRPG`；已确认主模块 `TPRPG`、UE `5.7`、`EnhancedInput` 依赖和输入默认类，并创建项目上下文 `D:\Project\UE_Project\TPRPG\.agents\ue-project-context.md`。
+- 2026-07-04：根据 `TPRPG` 当前代码重新扫描第 03 周进度；实际工程已拆为 `GPGameplay` / `GFGameplay`，并已具备输入管理、角色、战斗组件、属性组件、伤害接口和死亡反馈的基本路径。
+- 2026-07-04：修正第 03 周 `周计划.md`，将今天安排调整为“先 PIE 验证现有硬编码攻击闭环，再接入 `BasicAttack` 技能 DataTable”；同时在 `D:\Project\UE_Project\TPRPG\docs\superpowers\` 下新增今日计划、发现和进度记录。
+- 2026-07-05：新增 `第04周扩展方向_2026-07-05.md`，将第 04 周候选方向收敛为“第 03 周闭环收口 + 技能配置结构升级 + 火球技能最小雏形”，并列出 UI、受击反馈、简单 AI 和面试材料作为可选扩展。
+- 2026-07-05：根据用户判断，接受第 04 周接入 GAS；已新增 `GAS接入方案_2026-07-05.md`，并将第 04 周主线调整为“最小 GAS 骨架：ASC、AttributeSet、GameplayAbility、Damage GameplayEffect”。
+- 2026-07-06：生成第 04 周正式 `周计划.md`，时间范围为 `2026-07-06` 至 `2026-07-12`；本周主线是“修稳旧战斗闭环 + Character-owned ASC + Health AttributeSet + BasicAttack Ability + Damage GE”。
 
 ## 进行中
 - `in_progress`：按个人当前水平选择第一阶段任务。
@@ -62,6 +67,10 @@
 - `completed`：生成第 03 周正式 `Demo_设计草案.md` 和 `周计划.md`。
 - `in_progress`：准备执行第 03 周 Demo 第一阶段启动周。
 - `completed`：第 03 周周一项目创建与上下文确认，`TPRPG` 项目已可作为 Demo 实施载体。
+- `in_progress`：第 03 周周六任务，先验证 `Attack -> Sweep -> MakeDamage -> TakeDamage -> Health changed -> Actor dead`，再做技能 `DataTable` 最小接入。
+- `pending`：`FGPSkillRow : FTableRowBase`、`DT_SkillTable.BasicAttack`、`UGPCombatComponent` 读取 `DataTable` 伤害和范围。
+- `completed`：根据第 04 周扩展方向，正式生成 `2026-07-06` 至 `2026-07-12` 周计划。
+- `pending`：第 04 周正式确认 GAS 接入策略：ASC 暂放 `AGPCharacter` 还是直接放 `AGPPlayerState`。
 - `pending`：第 02 周复盘可后补完善。
 - `pending`：如需独立复盘，补 `第1周自测结果.md` 最小版。
 - `in_progress`：根据 `周计划回答评价_2026-06-15.md` 修正 UE 反射/UHT、CDO 和对象创建表达。
@@ -74,8 +83,10 @@
 - 暂无。
 
 ## 下一步
-- 第 03 周周二开始玩家移动和攻击输入，优先确认 `Attack` 输入能打印日志。
-- 后续进入 `UAttributeComponent`、`UCombatComponent` 和 `SphereTrace` 最小闭环。
+- 第 03 周周六优先在编辑器中确认当前硬编码攻击闭环是否稳定：输入、Sweep 方向、碰撞、敌人继承/接口、扣血和死亡反馈。
+- 闭环稳定后再实现 `FGPSkillRow` 和 `BasicAttack` 技能表，让 `Damage`、`Range` 从 `DataTable` 读取，并保留硬编码 fallback。
+- 第 04 周正式计划建议以“近战闭环稳定 + GAS 最小骨架 + BasicAttack Ability”为主线；火球作为 P1，不进入完整联机、预测或复杂 GameplayCue。
+- 本周下一步：按第 04 周周一安排，先验证旧攻击闭环，再进入 GAS 模块依赖和 ASC 接入。
 - 可选：后补 `第02周复盘_2026-06-28.md` 中本周最稳 5 点和仍不稳 5 点。
 - 可选：补独立 `第1周自测结果.md` 最小版。
 - 在 `2026-06-30` 前确定主 Demo 题材和范围。
