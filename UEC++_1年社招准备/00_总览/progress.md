@@ -70,7 +70,7 @@
 - `in_progress`：第 03 周周六任务，先验证 `Attack -> Sweep -> MakeDamage -> TakeDamage -> Health changed -> Actor dead`，再做技能 `DataTable` 最小接入。
 - `pending`：`FGPSkillRow : FTableRowBase`、`DT_SkillTable.BasicAttack`、`UGPCombatComponent` 读取 `DataTable` 伤害和范围。
 - `completed`：根据第 04 周扩展方向，正式生成 `2026-07-06` 至 `2026-07-12` 周计划。
-- `pending`：第 04 周正式确认 GAS 接入策略：ASC 暂放 `AGPCharacter` 还是直接放 `AGPPlayerState`。
+- `pending`：第 05 周按单机 Demo 方案将 ASC 暂放 `AGPCharacter`；后续进入联机阶段时再评估迁移到 `AGPPlayerState`。
 - `pending`：第 02 周复盘可后补完善。
 - `pending`：如需独立复盘，补 `第1周自测结果.md` 最小版。
 - `in_progress`：根据 `周计划回答评价_2026-06-15.md` 修正 UE 反射/UHT、CDO 和对象创建表达。
@@ -80,19 +80,17 @@
 - `completed`：第 2 周周一 RAII、智能指针回答评价。
 
 ## 阻塞项
-- 暂无。
+- 2026-07-06 至 2026-07-09 因安装电脑，Demo 项目未推进；当前优先恢复 UE C++ 工具链、工程编译和 PIE 基线。
 
 ## 下一步
-- 第 03 周周六优先在编辑器中确认当前硬编码攻击闭环是否稳定：输入、Sweep 方向、碰撞、敌人继承/接口、扣血和死亡反馈。
-- 闭环稳定后再实现 `FGPSkillRow` 和 `BasicAttack` 技能表，让 `Damage`、`Range` 从 `DataTable` 读取，并保留硬编码 fallback。
-- 第 04 周正式计划建议以“近战闭环稳定 + GAS 最小骨架 + BasicAttack Ability”为主线；火球作为 P1，不进入完整联机、预测或复杂 GameplayCue。
-- 本周下一步：按第 04 周周一安排，先验证旧攻击闭环，再进入 GAS 模块依赖和 ASC 接入。
+- 第 04 周已重排为“开发环境恢复 + 项目基线确认周”：周五完成环境清点和首次启动，周六恢复编译与旧攻击闭环，周日复验并制定第 05 周 GAS 计划。
+- GAS 最小闭环整体顺延到第 05 周；只有工程稳定编译、PIE 和旧攻击闭环通过后，才开始 ASC、AttributeSet、BasicAttack Ability 与 Damage GE。
+- 旧攻击闭环恢复后，再决定 `FGPSkillRow` / `DataTable` 接入与 GAS 主线的先后顺序，避免同时改动两套伤害数据来源。
 - 可选：后补 `第02周复盘_2026-06-28.md` 中本周最稳 5 点和仍不稳 5 点。
 - 可选：补独立 `第1周自测结果.md` 最小版。
-- 在 `2026-06-30` 前确定主 Demo 题材和范围。
-- 建议优先从“C++ 基础 + UE 生命周期/反射/GC + 小型 Gameplay Demo 骨架”开始。
 
 ## 复盘记录
+- 2026-07-10：因 7 月 6 日至 9 日安装电脑，第 04 周项目暂无进度；已停止压缩式追赶，将本周改为环境恢复和项目基线确认，原 GAS 最小接入主线顺延至第 05 周。
 - 2026-06-13：初始化计划。当前计划偏通用路线，后续应根据目标城市、目标公司、已有项目经历、准备周期做裁剪。
 - 2026-06-13：用户补充当前仍在上班，计划在 `2027-01` 初投递；已将路线改为在职备战节奏。
 - 2026-06-13：按用户要求创建能力自测和 Demo 方向探索两份问卷。
